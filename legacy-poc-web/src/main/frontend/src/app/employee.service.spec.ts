@@ -22,4 +22,17 @@ describe('EmployeeService', () => {
     expect(request.request.method).toBe('GET');
     request.flush([{employeeId: 1, firstName: 'John', lastName: 'Smith', email: 'john@example.com', department: 'Engineering', createdAt: null}]);
   });
+
+  it('uses the session CSRF token for writes', () => {
+    service.getSession().subscribe();
+    http.expectOne('/legacy-poc/api/session').flush({
+      username: 'employee-admin', roles: ['ROLE_EMPLOYEE_ADMIN'],
+      csrfHeaderName: 'X-CSRF-TOKEN', csrfToken: 'csrf-123'
+    });
+
+    service.deleteEmployee(9).subscribe();
+    const request = http.expectOne('/legacy-poc/api/employees/9');
+    expect(request.request.headers.get('X-CSRF-TOKEN')).toBe('csrf-123');
+    request.flush(null);
+  });
 });

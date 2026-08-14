@@ -1,6 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,7 +12,7 @@
 </head>
 <body>
 <header class="app-header">
-    <div class="container"><h1>Legacy Modernization POC</h1><p>Spring MVC + JSP + WebSphere + PostgreSQL</p></div>
+    <div class="container"><h1>Legacy Modernization POC</h1><p>Spring MVC + JSP + WebSphere + PostgreSQL</p><p>Signed in as <strong><sec:authentication property="principal.username"/></strong></p></div>
 </header>
 <main class="container narrow">
     <section class="panel">

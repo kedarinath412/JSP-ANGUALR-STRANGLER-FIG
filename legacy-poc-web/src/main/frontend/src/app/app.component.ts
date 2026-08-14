@@ -24,6 +24,8 @@ export class AppComponent implements OnInit {
   successMessage = '';
   errorMessage = '';
   serverFieldErrors: Record<string, string> = {};
+  username = '';
+  canEdit = false;
 
   readonly form = this.formBuilder.nonNullable.group({
     firstName: ['', [Validators.required, Validators.maxLength(100)]],
@@ -33,7 +35,14 @@ export class AppComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    this.loadEmployees();
+    this.employeeService.getSession().subscribe({
+      next: session => {
+        this.username = session.username;
+        this.canEdit = session.roles.includes('ROLE_EMPLOYEE_ADMIN');
+        this.loadEmployees();
+      },
+      error: () => window.location.assign(this.employeeService.loginUrl())
+    });
   }
 
   loadEmployees(): void {
@@ -124,6 +133,13 @@ export class AppComponent implements OnInit {
         this.applyApiError(error);
         this.changeDetectorRef.markForCheck();
       }
+    });
+  }
+
+  logout(): void {
+    this.employeeService.logout().subscribe({
+      next: () => window.location.assign(`${this.employeeService.loginUrl()}?logout`),
+      error: () => window.location.assign(this.employeeService.loginUrl())
     });
   }
 

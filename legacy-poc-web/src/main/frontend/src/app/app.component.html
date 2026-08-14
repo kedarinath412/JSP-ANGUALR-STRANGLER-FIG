@@ -5,12 +5,12 @@
       <h1>Legacy Modernization POC</h1>
       <p>Angular + REST + existing Spring Service + PostgreSQL</p>
     </div>
-    <a class="legacy-link" href="../employees">Open legacy JSP screen</a>
+    <div><p>Signed in as <strong>{{ username }}</strong></p><a class="legacy-link" href="../employees">Open legacy JSP screen</a> <button type="button" class="legacy-link" (click)="logout()">Sign out</button></div>
   </div>
 </header>
 
 <main class="container">
-  <section class="panel form-panel">
+  @if (canEdit) { <section class="panel form-panel">
     <div class="section-heading">
       <div>
         <p class="eyebrow">Modern UI</p>
@@ -47,7 +47,7 @@
         {{ saving ? 'Saving…' : (editingId === null ? 'Create employee' : 'Save changes') }}
       </button>
     </form>
-  </section>
+  </section> }
 
   <section class="panel">
     <div class="section-heading">
@@ -72,8 +72,10 @@
                 <td>{{ employee.department || '—' }}</td>
                 <td>{{ employee.createdAt | date:'medium' }}</td>
                 <td class="actions">
+                  @if (canEdit) {
                   <button type="button" class="text-button" (click)="edit(employee)">Edit</button>
                   <button type="button" class="text-button danger" (click)="remove(employee)">Delete</button>
+                  } @else { <span>View only</span> }
                 </td>
               </tr>
             }

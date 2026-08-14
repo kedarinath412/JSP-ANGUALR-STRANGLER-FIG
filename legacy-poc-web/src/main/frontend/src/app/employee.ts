@@ -12,3 +12,10 @@ export interface ApiError {
   message: string;
   fieldErrors: Record<string, string>;
 }
+
+export interface UserSession {
+  username: string;
+  roles: string[];
+  csrfHeaderName: string;
+  csrfToken: string;
+}

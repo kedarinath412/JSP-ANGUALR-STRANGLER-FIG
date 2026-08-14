@@ -28,6 +28,14 @@ describe('AppComponent', () => {
   it('renders employees as soon as the initial API request completes', async () => {
     fixture.detectChanges();
 
+    const sessionRequest = http.expectOne('/legacy-poc/api/session');
+    sessionRequest.flush({
+      username: 'employee-admin',
+      roles: ['ROLE_EMPLOYEE_ADMIN', 'ROLE_EMPLOYEE_VIEWER'],
+      csrfHeaderName: 'X-CSRF-TOKEN',
+      csrfToken: 'test-token'
+    });
+
     const request = http.expectOne('/legacy-poc/api/employees');
     request.flush([{
       employeeId: 1,

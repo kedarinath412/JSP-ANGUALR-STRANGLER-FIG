@@ -1,8 +1,10 @@
-# Legacy Modernization POC — Phases 1 and 2
+# Legacy Modernization POC — Phases 1, 2, and 3
 
-This repository is a runnable strangler-fig modernization POC built with Java 8, Spring Framework 5.3, Spring MVC, JSP, Angular 22, Spring JDBC, PostgreSQL, and IBM WebSphere Application Server Traditional 9.x. Maven builds one WAR containing both the existing JSP UI and the new Angular UI, then embeds it in an EAR.
+This repository is a runnable strangler-fig modernization POC built with Java 8, Spring Framework 5.3, Spring Security 5.8, Spring MVC, JSP, Angular 22, Spring JDBC, PostgreSQL, and IBM WebSphere Application Server Traditional 9.x. Maven builds one WAR containing both the existing JSP UI and the new Angular UI, then embeds it in an EAR.
 
 Phase 1 established the traditional JSP application. Phase 2 adds Angular and JSON REST controllers while deliberately reusing the existing `EmployeeService`, DAO, transaction boundaries, JNDI DataSource, and database. The application still contains no Spring Boot, embedded server, JPA, Hibernate, Jakarta APIs, or hard-coded database credentials.
+
+Phase 3 adds session-based identity and access management. A single Spring Security context is stored in WebSphere's `HttpSession`, so the same `JSESSIONID` authenticates legacy JSP navigation, Angular static resources, and Angular REST calls.
 
 ## Architecture
 
@@ -163,7 +165,7 @@ JAVA_HOME=/Users/kedar/Library/Java/JavaVirtualMachines/corretto-1.8.0_472/Conte
 mvn clean package
 ```
 
-The build does not require WebSphere or PostgreSQL. Unit tests mock those boundaries. The verified build runs 25 Java tests and 2 Angular tests, including initial employee-table rendering under Angular's zoneless change detection.
+The build does not require WebSphere or PostgreSQL. Unit tests mock those boundaries. The verified build runs 28 Java tests and 3 Angular tests, including shared-session security and initial employee-table rendering under Angular's zoneless change detection.
 
 Expected artifacts:
 
@@ -239,6 +241,50 @@ REST API:     http://localhost:9080/legacy-poc/api/employees
 ```
 
 The Angular application executes in the browser and calls the REST API in the same WAR. WebSphere only serves the compiled Angular files; it does not run Node or the Angular CLI at runtime.
+
+## Shared JSP and Angular authentication session
+
+Both presentation paths are same-origin and live in the same WAR:
+
+```text
+Browser cookie: JSESSIONID
+          |
+          v
+WebSphere HttpSession
+          |
+          v
+Spring SecurityContext
+          |
+          +--> JSP /employees/**
+          +--> Angular /app/**
+          +--> REST /api/**
+```
+
+There is no separate Angular login token and no browser-stored JWT. After form login, the browser automatically sends the same `JSESSIONID` cookie to all `/legacy-poc/**` requests. Angular calls `GET /api/session` to obtain the authenticated username, roles, and the CSRF header/token required for state-changing REST calls.
+
+Local demo identities:
+
+| Username | Password | Access |
+|---|---|---|
+| `employee-admin` | `admin-demo` | JSP/Angular read and write |
+| `employee-viewer` | `viewer-demo` | JSP/Angular read only |
+
+These in-memory identities are only for local architecture validation. They are not a production identity store. A production application should replace `UserDetailsService` with the organization's WebSphere registry/LDAP integration or an approved OIDC/SAML provider while retaining the shared server-side session and authorization design.
+
+Route behavior:
+
+```text
+Unauthenticated /employees/** or /app/** -> 302 /login
+Unauthenticated /api/**                  -> JSON 401
+Viewer GET requests                      -> allowed
+Viewer write requests                    -> JSON/HTTP 403
+Admin write requests                     -> allowed with CSRF token
+POST /logout                             -> session invalidated
+```
+
+Spring Security changes the session ID after successful login to protect against session fixation. CSRF protection remains enabled: Spring form tags/manual JSP hidden fields protect JSP POSTs, and Angular sends the token returned by `/api/session` in the configured request header.
+
+For a WebSphere cluster, verify session affinity or replication, cookie domain/path, HTTPS-only secure cookies, session timeout, SameSite policy, and the organization's SSO/logout requirements. Sharing works directly here because JSP, Angular, and REST are under the same scheme, host, port, context root, WAR, and `HttpSession`.
 
 ## Local POC status
 

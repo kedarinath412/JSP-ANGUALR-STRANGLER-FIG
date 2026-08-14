@@ -1,6 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,6 +15,7 @@
     <div class="container">
         <h1>Legacy Modernization POC</h1>
         <p>Spring MVC + JSP + WebSphere + PostgreSQL</p>
+        <p>Signed in as <strong><sec:authentication property="principal.username"/></strong></p>
     </div>
 </header>
 <main class="container">
@@ -22,8 +24,7 @@
         <div>
             <c:url value="/app/" var="angularUrl"/>
             <a class="button secondary" href="${angularUrl}">Modern Angular UI</a>
-            <c:url value="/employees/new" var="newEmployeeUrl"/>
-            <a class="button" href="${newEmployeeUrl}">Add Employee</a>
+            <sec:authorize access="hasRole('EMPLOYEE_ADMIN')"><c:url value="/employees/new" var="newEmployeeUrl"/><a class="button" href="${newEmployeeUrl}">Add Employee</a></sec:authorize>
         </div>
     </div>
 
@@ -48,14 +49,15 @@
                             <td><c:out value="${employee.email}"/></td>
                             <td><c:out value="${employee.department}"/></td>
                             <td><fmt:formatDate value="${employee.createdAt}" pattern="yyyy-MM-dd HH:mm"/></td>
-                            <td class="actions">
+                            <td class="actions"><sec:authorize access="hasRole('EMPLOYEE_ADMIN')">
                                 <c:url value="/employees/${employee.employeeId}/edit" var="editUrl"/>
                                 <c:url value="/employees/${employee.employeeId}/delete" var="deleteUrl"/>
                                 <a class="button secondary small" href="${editUrl}">Edit</a>
                                 <form method="post" action="${deleteUrl}" class="inline-form">
+                                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
                                     <button class="button danger small" type="submit">Delete</button>
                                 </form>
-                            </td>
+                            </sec:authorize></td>
                         </tr>
                     </c:forEach>
                 </c:otherwise>
@@ -64,6 +66,7 @@
         </table>
     </div>
     <c:url value="/" var="homeUrl"/><p><a href="${homeUrl}">Back to home</a></p>
+    <c:url value="/logout" var="logoutUrl"/><form method="post" action="${logoutUrl}"><input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"><button class="button secondary" type="submit">Sign out</button></form>
 </main>
 </body>
 </html>
