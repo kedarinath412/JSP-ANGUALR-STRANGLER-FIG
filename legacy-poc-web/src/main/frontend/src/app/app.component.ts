@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -15,6 +15,7 @@ import { EmployeeService } from './employee.service';
 export class AppComponent implements OnInit {
   private readonly employeeService = inject(EmployeeService);
   private readonly formBuilder = inject(FormBuilder);
+  private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
   employees: Employee[] = [];
   loading = true;
@@ -42,10 +43,12 @@ export class AppComponent implements OnInit {
       next: employees => {
         this.employees = employees;
         this.loading = false;
+        this.changeDetectorRef.markForCheck();
       },
       error: () => {
         this.errorMessage = 'Employees could not be loaded. Verify the WebSphere DataSource.';
         this.loading = false;
+        this.changeDetectorRef.markForCheck();
       }
     });
   }
@@ -102,6 +105,7 @@ export class AppComponent implements OnInit {
       error: error => {
         this.applyApiError(error);
         this.saving = false;
+        this.changeDetectorRef.markForCheck();
       }
     });
   }
@@ -116,7 +120,10 @@ export class AppComponent implements OnInit {
         this.successMessage = 'Employee deleted successfully.';
         this.loadEmployees();
       },
-      error: error => this.applyApiError(error)
+      error: error => {
+        this.applyApiError(error);
+        this.changeDetectorRef.markForCheck();
+      }
     });
   }
 

@@ -44,10 +44,11 @@ Angular is packaged as static browser assets in the existing WAR, not as a separ
 
 - `mvn clean package` with Java 8: success.
 - Java: 25 tests passed.
-- Angular: 1 test passed.
+- Angular: 2 tests passed, including immediate table rendering after the initial API response.
 - WAR contains `/app/index.html`, hashed JavaScript, and CSS assets.
 - WAR and EAR were rebuilt and the installed WebSphere application was updated successfully.
 - Live HTTP checks: JSP 200, Angular entry 200, Angular JavaScript 200, REST list/get 200, create 201, update/delete 204, validation 400, duplicate email 409, missing employee 404.
 - The disposable REST verification employee was deleted after the test.
+- Angular 22 zoneless change detection is explicitly notified after asynchronous HTTP callbacks, so employee data renders without requiring a form interaction.
 
 Status: Complete.

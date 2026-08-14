@@ -7,6 +7,7 @@
 - PostgreSQL JDBC 42.7.11 installed as a WebSphere-managed driver.
 - Secured J2C alias, user-defined pooled JDBC provider, and `jdbc/LegacyPocDS` configured through idempotent `wsadmin` scripts.
 - EAR installed and started at `/legacy-poc`.
+- Developer-facing shell wrappers added for configuration, DataSource testing, and deployment; the underlying WebSphere Jython is organized into documented functions.
 
 ## Verification
 

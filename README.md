@@ -139,6 +139,9 @@ Application lookup:   java:comp/env/jdbc/LegacyPocDS
 │   └── 03-drop-employee-table.sql
 ├── docs/implementation/
 ├── local-poc/
+│   ├── configure-websphere.sh
+│   ├── test-datasource.sh
+│   ├── deploy-application.sh
 │   ├── configure-websphere-postgresql.py
 │   ├── test-websphere-datasource.py
 │   └── deploy-application.py
@@ -160,7 +163,7 @@ JAVA_HOME=/Users/kedar/Library/Java/JavaVirtualMachines/corretto-1.8.0_472/Conte
 mvn clean package
 ```
 
-The build does not require WebSphere or PostgreSQL. Unit tests mock those boundaries. The verified build runs 25 Java tests and 1 Angular test.
+The build does not require WebSphere or PostgreSQL. Unit tests mock those boundaries. The verified build runs 25 Java tests and 2 Angular tests, including initial employee-table rendering under Angular's zoneless change detection.
 
 Expected artifacts:
 
@@ -320,7 +323,17 @@ org.postgresql.ds.PGConnectionPoolDataSource
 4. Set the provider classpath to the server-side PostgreSQL JDBC JAR.
 5. Use non-XA/one-phase operation for this single-database POC.
 
-The local container uses `/work/lib/postgresql.jar` and the idempotent `local-poc/configure-websphere-postgresql.py` script.
+The local container uses `/work/lib/postgresql.jar`. Use the readable wrapper:
+
+```bash
+DB_PASSWORD='your-local-postgres-password' ./local-poc/configure-websphere.sh
+```
+
+It invokes the idempotent WebSphere Jython configuration internally. Then verify the connection:
+
+```bash
+./local-poc/test-datasource.sh
+```
 
 ### Authentication alias
 
@@ -368,7 +381,13 @@ From the administrative console:
 5. Verify resource reference `jdbc/LegacyPocDS` maps to `jdbc/LegacyPocDS`.
 6. Save, synchronize if applicable, and start the application.
 
-The repository includes `local-poc/deploy-application.py` for repeatable local deployment. `WEB-INF/ibm-web-bnd.xml` contains the same resource mapping.
+For repeatable local deployment after `mvn clean package`, run:
+
+```bash
+./local-poc/deploy-application.sh
+```
+
+The shell wrapper copies the EAR and invokes the required WebSphere Jython deployment internally. `WEB-INF/ibm-web-bnd.xml` contains the same resource mapping. See `local-poc/README.md` for a step-by-step explanation of all three commands.
 
 ## Transaction strategy
 

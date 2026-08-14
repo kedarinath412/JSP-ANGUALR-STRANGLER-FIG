@@ -1,5 +1,38 @@
-data_source = AdminConfig.getid("/Cell:DefaultCell01/Node:DefaultNode01/Server:server1/JDBCProvider:Legacy POC PostgreSQL JDBC Provider/DataSource:LegacyPocDS/")
-if not data_source:
-    raise Exception("LegacyPocDS configuration was not found")
+"""Ask WebSphere to test the configured LegacyPocDS connection."""
 
-print AdminControl.testConnection(data_source)
+CELL_NAME = "DefaultCell01"
+NODE_NAME = "DefaultNode01"
+SERVER_NAME = "server1"
+JDBC_PROVIDER_NAME = "Legacy POC PostgreSQL JDBC Provider"
+DATA_SOURCE_NAME = "LegacyPocDS"
+
+
+def data_source_configuration_path():
+    """Build the exact WebSphere configuration path for this DataSource."""
+    return (
+        "/Cell:%s/Node:%s/Server:%s/JDBCProvider:%s/DataSource:%s/"
+        % (
+            CELL_NAME,
+            NODE_NAME,
+            SERVER_NAME,
+            JDBC_PROVIDER_NAME,
+            DATA_SOURCE_NAME
+        )
+    )
+
+
+def main():
+    print "Locating DataSource " + DATA_SOURCE_NAME
+    data_source_id = AdminConfig.getid(data_source_configuration_path())
+    if not data_source_id:
+        raise Exception(
+            DATA_SOURCE_NAME + " was not found; run configure-websphere.sh first"
+        )
+
+    print "Requesting a connection test from WebSphere"
+    result = AdminControl.testConnection(data_source_id)
+    print result
+    print "The shell wrapper now checks the server log for DSRA8030I confirmation."
+
+
+main()

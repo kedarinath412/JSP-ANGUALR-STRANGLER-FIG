@@ -17,7 +17,7 @@ Each phase note records its delivered scope and verification evidence. The root 
 
 - Completed: 2026-08-12
 - Build command: `mvn clean package`
-- Automated tests: 25 Java tests and 1 Angular test passed
+- Automated tests: 25 Java tests and 2 Angular tests passed
 - Primary artifact: `legacy-poc-ear/target/legacy-poc-ear.ear`
 - Web artifact: `legacy-poc-web/target/legacy-poc-web.war`
 - Local PostgreSQL/WebSphere integration verification is tracked in the local POC setup section of the root README.
