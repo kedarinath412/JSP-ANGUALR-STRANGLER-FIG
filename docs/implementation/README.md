@@ -16,10 +16,13 @@ Each phase note records its delivered scope and verification evidence. The root 
 
 For the end-to-end runtime explanation—including WebSphere startup, Spring contexts, routing, JSP, Angular, REST, transactions, JNDI, security, CSRF, and logout—see [`../internal-working-guide.md`](../internal-working-guide.md).
 
+For Windows prerequisites and the complete WSL2/Docker Desktop installation sequence, see [`../windows-local-setup.md`](../windows-local-setup.md).
+
 ## Overall result
 
 - Implementation completed: 2026-08-13
 - Internal-working guide added: 2026-08-14
+- Windows local-setup guide added: 2026-08-14
 - Build command: `mvn clean package`
 - Automated tests: 28 Java tests and 3 Angular tests passed
 - Primary artifact: `legacy-poc-ear/target/legacy-poc-ear.ear`

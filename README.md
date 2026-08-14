@@ -8,6 +8,8 @@ Phase 3 adds session-based identity and access management. A single Spring Secur
 
 For a detailed trace of how WebSphere startup, Spring contexts, routing, JSP, Angular, REST, transactions, JNDI, session security, CSRF, and logout work internally, read the [Internal Working Guide](docs/internal-working-guide.md).
 
+For a complete Windows laptop setup using WSL2 and Docker Desktop, follow the [Windows Local Setup Guide](docs/windows-local-setup.md).
+
 ## Architecture
 
 ```text
@@ -141,7 +143,10 @@ Application lookup:   java:comp/env/jdbc/LegacyPocDS
 │   ├── 01-create-employee-table.sql
 │   ├── 02-insert-sample-data.sql
 │   └── 03-drop-employee-table.sql
-├── docs/implementation/
+├── docs/
+│   ├── internal-working-guide.md
+│   ├── windows-local-setup.md
+│   └── implementation/
 ├── local-poc/
 │   ├── configure-websphere.sh
 │   ├── test-datasource.sh
@@ -503,4 +508,4 @@ Expected JSON error statuses are `400` for validation, `404` for a missing emplo
 - Confirm the DataSource scope is visible to every deployment target.
 - Do not treat the local generated certificates or passwords as production configuration.
 
-Phase records are maintained in `docs/implementation/`. The cross-phase runtime internals are documented in [`docs/internal-working-guide.md`](docs/internal-working-guide.md).
+Phase records are maintained in `docs/implementation/`. The cross-phase runtime internals are documented in [`docs/internal-working-guide.md`](docs/internal-working-guide.md), and Windows setup is documented in [`docs/windows-local-setup.md`](docs/windows-local-setup.md).

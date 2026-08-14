@@ -650,6 +650,8 @@ If Angular is later deployed on a different origin, cookie behavior, CORS, CSRF,
 
 This guide explains the current POC mechanics; these production choices remain environment-specific.
 
+For a clean installation of this runtime on a Windows laptop, follow the [Windows Local Setup Guide](windows-local-setup.md).
+
 ## 14. How the automated tests avoid WebSphere and PostgreSQL
 
 The Maven build does not connect to a live application server or database:
