@@ -1,0 +1,85 @@
+<header class="app-header">
+  <div class="container header-content">
+    <div>
+      <p class="eyebrow">Phase 2 · Strangler Fig Modernization</p>
+      <h1>Legacy Modernization POC</h1>
+      <p>Angular + REST + existing Spring Service + PostgreSQL</p>
+    </div>
+    <a class="legacy-link" href="../employees">Open legacy JSP screen</a>
+  </div>
+</header>
+
+<main class="container">
+  <section class="panel form-panel">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">Modern UI</p>
+        <h2>{{ editingId === null ? 'Add employee' : 'Edit employee' }}</h2>
+      </div>
+      @if (editingId !== null) {
+        <button type="button" class="button secondary" (click)="cancelEdit()">Cancel edit</button>
+      }
+    </div>
+
+    @if (successMessage) { <div class="alert success" role="status">{{ successMessage }}</div> }
+    @if (errorMessage) { <div class="alert error" role="alert">{{ errorMessage }}</div> }
+
+    <form [formGroup]="form" (ngSubmit)="save()" novalidate>
+      <div class="form-grid">
+        <label>First name <span>*</span>
+          <input formControlName="firstName" maxlength="100">
+          @if (fieldError('firstName')) { <small>{{ fieldError('firstName') }}</small> }
+        </label>
+        <label>Last name <span>*</span>
+          <input formControlName="lastName" maxlength="100">
+          @if (fieldError('lastName')) { <small>{{ fieldError('lastName') }}</small> }
+        </label>
+        <label>Email <span>*</span>
+          <input type="email" formControlName="email" maxlength="200">
+          @if (fieldError('email')) { <small>{{ fieldError('email') }}</small> }
+        </label>
+        <label>Department
+          <input formControlName="department" maxlength="100">
+          @if (fieldError('department')) { <small>{{ fieldError('department') }}</small> }
+        </label>
+      </div>
+      <button class="button primary" type="submit" [disabled]="saving">
+        {{ saving ? 'Saving…' : (editingId === null ? 'Create employee' : 'Save changes') }}
+      </button>
+    </form>
+  </section>
+
+  <section class="panel">
+    <div class="section-heading">
+      <div><p class="eyebrow">Shared business layer</p><h2>Employees</h2></div>
+      <button type="button" class="button secondary" (click)="loadEmployees()">Refresh</button>
+    </div>
+
+    @if (loading) {
+      <p class="state">Loading employees…</p>
+    } @else if (employees.length === 0) {
+      <p class="state">No employees found.</p>
+    } @else {
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Department</th><th>Created</th><th>Actions</th></tr></thead>
+          <tbody>
+            @for (employee of employees; track employee.employeeId) {
+              <tr>
+                <td>{{ employee.employeeId }}</td>
+                <td><strong>{{ employee.firstName }} {{ employee.lastName }}</strong></td>
+                <td>{{ employee.email }}</td>
+                <td>{{ employee.department || '—' }}</td>
+                <td>{{ employee.createdAt | date:'medium' }}</td>
+                <td class="actions">
+                  <button type="button" class="text-button" (click)="edit(employee)">Edit</button>
+                  <button type="button" class="text-button danger" (click)="remove(employee)">Delete</button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+</main>

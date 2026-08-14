@@ -1,0 +1,17 @@
+# Maven build output
+target/
+
+# Angular dependencies and build cache
+node_modules/
+.angular/
+
+# IntelliJ IDEA project metadata
+.idea/
+*.iml
+
+# macOS metadata
+.DS_Store
+
+# Local logs and temporary files
+*.log
+*.tmp
