@@ -6,6 +6,8 @@ Phase 1 established the traditional JSP application. Phase 2 adds Angular and JS
 
 Phase 3 adds session-based identity and access management. A single Spring Security context is stored in WebSphere's `HttpSession`, so the same `JSESSIONID` authenticates legacy JSP navigation, Angular static resources, and Angular REST calls.
 
+For a detailed trace of how WebSphere startup, Spring contexts, routing, JSP, Angular, REST, transactions, JNDI, session security, CSRF, and logout work internally, read the [Internal Working Guide](docs/internal-working-guide.md).
+
 ## Architecture
 
 ```text
@@ -501,4 +503,4 @@ Expected JSON error statuses are `400` for validation, `404` for a missing emplo
 - Confirm the DataSource scope is visible to every deployment target.
 - Do not treat the local generated certificates or passwords as production configuration.
 
-Phase records are maintained in `docs/implementation/`.
+Phase records are maintained in `docs/implementation/`. The cross-phase runtime internals are documented in [`docs/internal-working-guide.md`](docs/internal-working-guide.md).

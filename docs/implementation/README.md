@@ -14,12 +14,15 @@
 
 Each phase note records its delivered scope and verification evidence. The root `README.md` is the operational guide.
 
+For the end-to-end runtime explanation—including WebSphere startup, Spring contexts, routing, JSP, Angular, REST, transactions, JNDI, security, CSRF, and logout—see [`../internal-working-guide.md`](../internal-working-guide.md).
+
 ## Overall result
 
-- Completed: 2026-08-12
+- Implementation completed: 2026-08-13
+- Internal-working guide added: 2026-08-14
 - Build command: `mvn clean package`
 - Automated tests: 28 Java tests and 3 Angular tests passed
 - Primary artifact: `legacy-poc-ear/target/legacy-poc-ear.ear`
 - Web artifact: `legacy-poc-web/target/legacy-poc-web.war`
 - Local PostgreSQL/WebSphere integration verification is tracked in the local POC setup section of the root README.
-- Phase 2 is deployed locally: legacy JSP, Angular, and REST paths are all operational in the same EAR/WAR.
+- Modernization Phases 1–3 are implemented: legacy JSP, Angular/REST, and shared session security are operational in the same EAR/WAR.
